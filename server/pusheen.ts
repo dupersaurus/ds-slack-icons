@@ -15,9 +15,17 @@ export class PusheenRouter {
     this.init();
   }
 
-  public listIcons(req: Request, res: Response, next: NextFunction) {
+  public handleRequest(req: Request, res: Response, next: NextFunction) {
     console.log(req.body);
 
+    if (req.body.text == "") {
+      PusheenRouter.sendIconList(req, res);
+    } else {
+      PusheenRouter.sendIcon(req, res);
+    }
+  }
+
+  private static sendIconList(req: Request, res: Response) {
     var output: string[] = [];
 
     for (var key in PusheenRouter._icons) {
@@ -30,6 +38,22 @@ export class PusheenRouter {
     /*res.render('list', {
         list: output.join("\n")
     });*/
+  }
+
+  private static sendIcon(req: Request, res: Response) {
+    res.contentType("application/json");
+
+    var icon = PusheenRouter.getIcon(req.body.text);
+
+    if (icon == null) {
+      this.sendIconList(req, res);
+    } else {
+      res.send(`{"text": "${req.body.text}", "attachments": [{"image-url": "${icon}"}]}`);
+    }
+  }
+
+  private static getIcon(name: string): string {
+    return PusheenRouter._icons[name];
   }
 
   /**
@@ -51,8 +75,8 @@ export class PusheenRouter {
         }
     }
 
-    this.router.get('/', this.listIcons);
-    this.router.post('/', this.listIcons);
+    this.router.get('/', this.handleRequest);
+    this.router.post('/', this.handleRequest);
   }
 
 }
