@@ -1,0 +1,5 @@
+{
+    "sets": [
+        { "name": "pusheen", "list": "pusheen-list.json" }
+    ]
+}

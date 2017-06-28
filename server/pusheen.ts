@@ -1,7 +1,11 @@
 import {Router, Request, Response, NextFunction} from 'express';
+import {DataManager} from "./data";
+import fs = require("fs");
 
 export class PusheenRouter {
   router: Router
+
+  private static _icons: Object = null;
 
   /**
    * Initialize the HeroRouter
@@ -12,11 +16,15 @@ export class PusheenRouter {
   }
 
   public listIcons(req: Request, res: Response, next: NextFunction) {
-    console.log(req.body);
+    var output: string[] = [];
+
+    for (var key in PusheenRouter._icons) {
+        output.push(key);
+    }
 
     //res.send("All yer items are belong to us");
     res.render('list', {
-        list: 'A list of all your pusheens'
+        list: output.join("\n")
     });
   }
 
@@ -25,6 +33,20 @@ export class PusheenRouter {
    * endpoints.
    */
   init() {
+
+    // take into account file being updated at runtime
+    if (PusheenRouter._icons == null) {
+        PusheenRouter._icons = new Map<string, string>();
+        
+        var file = new DataManager().getSetDefinition("pusheen");
+        var data = JSON.parse(fs.readFileSync(`data/${file}`, 'utf8'));
+
+        for (var icon of data.icons) {
+            PusheenRouter._icons[icon.name] = icon.url;
+            console.log(`pusheen has icon >> ${icon.name} at ${icon.url}`);
+        }
+    }
+
     this.router.get('/', this.listIcons);
   }
 

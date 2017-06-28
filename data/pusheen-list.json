@@ -1,0 +1,8 @@
+{
+    "icons": [
+        { "name": "test1", "url": "a" },
+        { "name": "test2", "url": "b" },
+        { "name": "test3", "url": "c" },
+        { "name": "test4", "url": "d" }
+    ]
+}
