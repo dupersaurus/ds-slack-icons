@@ -1,11 +1,22 @@
 import * as express from 'express';
 import {DataManager} from "./data";
 import {ImageServer} from "./image-server"
+import fs = require("fs");
 
 export class CommandRouter {
     private static _imageSets:Object = {};
+    private _token: string = null;
 
     constructor(private _router:express.Router) {
+        var config = JSON.parse(fs.readFileSync(`data/config.json`, 'utf8'));
+
+        if (config.apptoken == null || config.apptoken == "") {
+            console.error("App verification token must be set in config file");
+            return;
+        }
+
+        this._token = config.apptoken;
+
         var data = new DataManager();
         var sets = data.getSets();
 
@@ -21,6 +32,11 @@ export class CommandRouter {
     }
 
     handleRequest(req: express.Request, res: express.Response, next: express.NextFunction) {
+        if (req.body && req.body.token != this._token) {
+            res.sendStatus(401);
+            return;
+        }
+
         if (req.body.command) {
             var server = this.matchCommand(req.body.command);
 

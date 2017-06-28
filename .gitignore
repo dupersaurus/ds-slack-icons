@@ -1,8 +1,9 @@
 .vscode/
 typings/
-build/
+build/*
 node_modules/
 images/
 .DS*
 ._.*
 npm-debug.log
+data/config.json

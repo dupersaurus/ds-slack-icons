@@ -49,8 +49,8 @@
 	 * Module dependencies.
 	 */
 	var app = __webpack_require__(1);
-	var http = __webpack_require__(11);
-	var debug = __webpack_require__(12);
+	var http = __webpack_require__(12);
+	var debug = __webpack_require__(13);
 	// binding to console
 	var log = debug('modern-express:server');
 	log.log = console.log.bind(console);
@@ -201,14 +201,9 @@
 
 	"use strict";
 	var express = __webpack_require__(2);
-	var pusheen_1 = __webpack_require__(8);
+	var command_router_1 = __webpack_require__(8);
 	var router = express.Router();
-	/*router.get('/', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-	    res.render('index', {
-	        title: 'Express'
-	    });
-	});*/
-	router.use("/", pusheen_1.default);
+	var commandRouter = new command_router_1.CommandRouter(router);
 	module.exports = router;
 
 
@@ -217,76 +212,64 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var express_1 = __webpack_require__(2);
 	var data_1 = __webpack_require__(9);
+	var image_server_1 = __webpack_require__(11);
 	var fs = __webpack_require__(10);
-	var PusheenRouter = (function () {
-	    /**
-	     * Initialize the HeroRouter
-	     */
-	    function PusheenRouter() {
-	        this.router = express_1.Router();
-	        this.init();
+	var CommandRouter = (function () {
+	    function CommandRouter(_router) {
+	        var _this = this;
+	        this._router = _router;
+	        this._token = null;
+	        var config = JSON.parse(fs.readFileSync("data/config.json", 'utf8'));
+	        if (config.apptoken == null || config.apptoken == "") {
+	            console.error("App verification token must be set in config file");
+	            return;
+	        }
+	        this._token = config.apptoken;
+	        var data = new data_1.DataManager();
+	        var sets = data.getSets();
+	        for (var set in sets) {
+	            CommandRouter._imageSets[("/" + set)] = new image_server_1.ImageServer(set);
+	        }
+	        _router.use("/", function (req, res, next) { return _this.handleRequest(req, res, next); });
 	    }
-	    PusheenRouter.prototype.handleRequest = function (req, res, next) {
-	        console.log(req.body);
-	        if (req.body.text == "") {
-	            PusheenRouter.sendIconList(req, res);
+	    Object.defineProperty(CommandRouter.prototype, "router", {
+	        get: function () {
+	            return this._router;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    CommandRouter.prototype.handleRequest = function (req, res, next) {
+	        if (req.body && req.body.token != this._token) {
+	            res.sendStatus(401);
+	            return;
 	        }
-	        else {
-	            PusheenRouter.sendIcon(req, res);
-	        }
-	    };
-	    PusheenRouter.sendIconList = function (req, res) {
-	        var output = [];
-	        for (var key in PusheenRouter._icons) {
-	            output.push(key);
-	        }
-	        res.contentType("application/json");
-	        res.send("{\"text\": \"All icon names: " + output.join('\\n') + "\"}");
-	        /*res.render('list', {
-	            list: output.join("\n")
-	        });*/
-	    };
-	    PusheenRouter.sendIcon = function (req, res) {
-	        res.contentType("application/json");
-	        var icon = PusheenRouter.getIcon(req.body.text);
-	        if (icon == null) {
-	            this.sendIconList(req, res);
-	        }
-	        else {
-	            res.send("{\"response_type\": \"in_channel\", \"text\": \"" + req.body.text + "\", \"attachments\": [{\"image_url\": \"" + icon + "\"}]}");
-	        }
-	    };
-	    PusheenRouter.getIcon = function (name) {
-	        return PusheenRouter._icons[name];
-	    };
-	    /**
-	     * Take each handler, and attach to one of the Express.Router's
-	     * endpoints.
-	     */
-	    PusheenRouter.prototype.init = function () {
-	        // take into account file being updated at runtime
-	        if (PusheenRouter._icons == null) {
-	            PusheenRouter._icons = new Map();
-	            var file = new data_1.DataManager().getSetDefinition("pusheen");
-	            var data = JSON.parse(fs.readFileSync("data/" + file, 'utf8'));
-	            for (var icon in data.icons) {
-	                PusheenRouter._icons[icon] = data.icons[icon];
-	                console.log("pusheen has icon >> " + icon + " at " + data.icons[icon]);
+	        if (req.body.command) {
+	            var server = this.matchCommand(req.body.command);
+	            if (server) {
+	                server.handleRequest(req, res, next);
+	            }
+	            else {
+	                res.sendStatus(404);
 	            }
 	        }
-	        this.router.get('/', this.handleRequest);
-	        this.router.post('/', this.handleRequest);
+	        else {
+	            res.sendStatus(404);
+	        }
 	    };
-	    PusheenRouter._icons = null;
-	    return PusheenRouter;
+	    CommandRouter.prototype.matchCommand = function (command) {
+	        if (CommandRouter._imageSets[command]) {
+	            return CommandRouter._imageSets[command];
+	        }
+	        else {
+	            return null;
+	        }
+	    };
+	    CommandRouter._imageSets = {};
+	    return CommandRouter;
 	}());
-	exports.PusheenRouter = PusheenRouter;
-	var pusheenRoutes = new PusheenRouter();
-	pusheenRoutes.init();
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = pusheenRoutes.router;
+	exports.CommandRouter = CommandRouter;
 
 
 /***/ }),
@@ -311,13 +294,15 @@
 	    DataManager.prototype.getSetDefinition = function (name) {
 	        return DataManager._iconSets[name];
 	    };
+	    DataManager.prototype.getSets = function () {
+	        return DataManager._iconSets;
+	    };
 	    DataManager._iconSets = null;
 	    return DataManager;
 	}());
 	exports.DataManager = DataManager;
-	var dataManager = new DataManager();
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = dataManager;
+	exports.default = DataManager;
 
 
 /***/ }),
@@ -328,12 +313,67 @@
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var fs = __webpack_require__(10);
+	var data_1 = __webpack_require__(9);
+	var ImageServer = (function () {
+	    function ImageServer(_set) {
+	        this._set = _set;
+	        this._icons = null;
+	        this._icons = new Object();
+	        var file = new data_1.DataManager().getSetDefinition(_set);
+	        var data = JSON.parse(fs.readFileSync("data/" + file, 'utf8'));
+	        for (var icon in data.icons) {
+	            this._icons[icon] = data.icons[icon];
+	            console.log(_set + " has icon >> " + icon + " at " + data.icons[icon]);
+	        }
+	    }
+	    ImageServer.prototype.handleRequest = function (req, res, next) {
+	        if (req.body.text == "") {
+	            this.sendIconList(req, res);
+	        }
+	        else {
+	            this.sendIcon(req, res);
+	        }
+	    };
+	    ImageServer.prototype.sendIconList = function (req, res) {
+	        var output = [];
+	        for (var key in this._icons) {
+	            output.push(key);
+	        }
+	        res.contentType("application/json");
+	        res.send("{\"text\": \"All icon names: " + output.join('\\n') + "\"}");
+	    };
+	    ImageServer.prototype.sendIcon = function (req, res) {
+	        res.contentType("application/json");
+	        var icon = this.getIcon(req.body.text);
+	        if (icon == null) {
+	            this.sendIconList(req, res);
+	        }
+	        else {
+	            res.send("{\"response_type\": \"in_channel\", \"text\": \"" + req.body.text + "\", \"attachments\": [{\"image_url\": \"" + icon + "\"}]}");
+	        }
+	    };
+	    ImageServer.prototype.getIcon = function (name) {
+	        return this._icons[name];
+	    };
+	    return ImageServer;
+	}());
+	exports.ImageServer = ImageServer;
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = ImageServer;
+
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports) {
 
 	module.exports = require("http");
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 	module.exports = require("debug");
