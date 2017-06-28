@@ -48,6 +48,7 @@ export class PusheenRouter {
     }
 
     this.router.get('/', this.listIcons);
+    this.router.post('/', this.listIcons);
   }
 
 }
