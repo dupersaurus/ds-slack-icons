@@ -69,9 +69,9 @@ export class PusheenRouter {
         var file = new DataManager().getSetDefinition("pusheen");
         var data = JSON.parse(fs.readFileSync(`data/${file}`, 'utf8'));
 
-        for (var icon of data.icons) {
-            PusheenRouter._icons[icon.name] = icon.url;
-            console.log(`pusheen has icon >> ${icon.name} at ${icon.url}`);
+        for (var icon in data.icons) {
+            PusheenRouter._icons[icon] = data.icons[icon];
+            console.log(`pusheen has icon >> ${icon} at ${data.icons[icon]}`);
         }
     }
 

@@ -1,8 +1,5 @@
 {
-    "icons": [
-        { "name": "test1", "url": "a" },
-        { "name": "test2", "url": "b" },
-        { "name": "test3", "url": "c" },
-        { "name": "test4", "url": "d" }
-    ]
+    "icons": {
+        
+    "zzzs":"http://i.imgur.com/83b74lA.png","yarn":"http://i.imgur.com/TGUBNzq.png","worried":"http://i.imgur.com/EIhnnbS.png","wired":"http://i.imgur.com/VAoxiB3.png","wave":"http://i.imgur.com/0zJZwpu.png","waah":"http://i.imgur.com/pxUTeMx.png","unamused":"http://i.imgur.com/j3A8RHe.png","teehee":"http://i.imgur.com/Mwz3fY7.png","tear":"http://i.imgur.com/vckrTqI.png","sweet":"http://i.imgur.com/GdD8LED.png","sushi":"http://i.imgur.com/qhdLfeu.png","surprise":"http://i.imgur.com/SgN0J0K.png","stare":"http://i.imgur.com/nNPgsgj.png","speak":"http://i.imgur.com/TDkWzmh.png","sparkle":"http://i.imgur.com/WP5bFL4.png","sleep":"http://i.imgur.com/VJA525m.png","scooter":"http://i.imgur.com/ttDhQE2.png","sad":"http://i.imgur.com/B9LZGdw.png","pumped":"http://i.imgur.com/NLvTA9j.png","popcorn":"http://i.imgur.com/A57sLQX.png","pizza":"http://i.imgur.com/Jz7nlfS.png","piano":"http://i.imgur.com/yBkGTZM.png","paw":"http://i.imgur.com/6v6KXQM.png","noodles":"http://i.imgur.com/BnytjWN.png","magical":"http://i.imgur.com/m2etgci.png","laugh":"http://i.imgur.com/6imKzUI.png","kneading":"http://i.imgur.com/MiDucD9.png","heart":"http://i.imgur.com/BOSvKIj.png","fancy":"http://i.imgur.com/dgDjKnH.png","embarassed":"http://i.imgur.com/rBfJSNy.png","donut":"http://i.imgur.com/p3LWwTt.png","dj":"http://i.imgur.com/6YqEt6u.png","cool":"http://i.imgur.com/ug0wbuY.png","computer":"http://i.imgur.com/jNZjDWv.png","cola":"http://i.imgur.com/GZrIw4w.png","cake":"http://i.imgur.com/zyKQkxB.png","box":"http://i.imgur.com/xkiMsOP.png","book":"http://i.imgur.com/P4uxfYL.png","blah":"http://i.imgur.com/gQh7Aet.png","belly":"http://i.imgur.com/duCSQVo.png","art":"http://i.imgur.com/zTl0XRn.png","angry":"http://i.imgur.com/Ck8CYow.png"}
 }

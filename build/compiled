@@ -228,15 +228,38 @@
 	        this.router = express_1.Router();
 	        this.init();
 	    }
-	    PusheenRouter.prototype.listIcons = function (req, res, next) {
+	    PusheenRouter.prototype.handleRequest = function (req, res, next) {
+	        console.log(req.body);
+	        if (req.body.text == "") {
+	            PusheenRouter.sendIconList(req, res);
+	        }
+	        else {
+	            PusheenRouter.sendIcon(req, res);
+	        }
+	    };
+	    PusheenRouter.sendIconList = function (req, res) {
 	        var output = [];
 	        for (var key in PusheenRouter._icons) {
 	            output.push(key);
 	        }
-	        //res.send("All yer items are belong to us");
-	        res.render('list', {
+	        res.contentType("application/json");
+	        res.send("{\"text\": \"All icon names: " + output.join('\\n') + "\"}");
+	        /*res.render('list', {
 	            list: output.join("\n")
-	        });
+	        });*/
+	    };
+	    PusheenRouter.sendIcon = function (req, res) {
+	        res.contentType("application/json");
+	        var icon = PusheenRouter.getIcon(req.body.text);
+	        if (icon == null) {
+	            this.sendIconList(req, res);
+	        }
+	        else {
+	            res.send("{\"response_type\": \"in_channel\", \"text\": \"" + req.body.text + "\", \"attachments\": [{\"image-url\": \"" + icon + "\"}]}");
+	        }
+	    };
+	    PusheenRouter.getIcon = function (name) {
+	        return PusheenRouter._icons[name];
 	    };
 	    /**
 	     * Take each handler, and attach to one of the Express.Router's
@@ -248,13 +271,13 @@
 	            PusheenRouter._icons = new Map();
 	            var file = new data_1.DataManager().getSetDefinition("pusheen");
 	            var data = JSON.parse(fs.readFileSync("data/" + file, 'utf8'));
-	            for (var _i = 0, _a = data.icons; _i < _a.length; _i++) {
-	                var icon = _a[_i];
-	                PusheenRouter._icons[icon.name] = icon.url;
-	                console.log("pusheen has icon >> " + icon.name + " at " + icon.url);
+	            for (var icon in data.icons) {
+	                PusheenRouter._icons[icon] = data.icons[icon];
+	                console.log("pusheen has icon >> " + icon + " at " + data.icons[icon]);
 	            }
 	        }
-	        this.router.get('/', this.listIcons);
+	        this.router.get('/', this.handleRequest);
+	        this.router.post('/', this.handleRequest);
 	    };
 	    PusheenRouter._icons = null;
 	    return PusheenRouter;
