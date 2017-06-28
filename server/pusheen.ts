@@ -22,10 +22,12 @@ export class PusheenRouter {
         output.push(key);
     }
 
-    //res.send("All yer items are belong to us");
-    res.render('list', {
+    res.contentType("application/json");
+
+    res.send(`{"text": "${output.join(',\\n')}"}`);
+    /*res.render('list', {
         list: output.join("\n")
-    });
+    });*/
   }
 
   /**
