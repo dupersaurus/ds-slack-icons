@@ -1,5 +1,6 @@
 .vscode/
 typings/
+build/
 node_modules/
 .DS*
 ._.*

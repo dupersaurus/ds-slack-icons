@@ -16,6 +16,8 @@ export class PusheenRouter {
   }
 
   public listIcons(req: Request, res: Response, next: NextFunction) {
+    console.log(req.body);
+
     var output: string[] = [];
 
     for (var key in PusheenRouter._icons) {
@@ -23,8 +25,8 @@ export class PusheenRouter {
     }
 
     res.contentType("application/json");
-
-    res.send(`{"text": "${output.join(',\\n')}"}`);
+    res.send(`{"text": "All icon names: ${output.join('\\n')}"}`);
+    
     /*res.render('list', {
         list: output.join("\n")
     });*/
