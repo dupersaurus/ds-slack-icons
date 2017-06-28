@@ -1,5 +1,4 @@
 import * as express from 'express';
-import PusheenRouter from "./pusheen";
 import {CommandRouter} from "./command-router"
 
 const router = express.Router();
