@@ -48,7 +48,7 @@ export class PusheenRouter {
     if (icon == null) {
       this.sendIconList(req, res);
     } else {
-      res.send(`{"text": "${req.body.text}", "attachments": [{"image-url": "${icon}"}]}`);
+      res.send(`{"response_type": "in_channel", "text": "${req.body.text}", "attachments": [{"image-url": "${icon}"}]}`);
     }
   }
 
