@@ -1,4 +1,5 @@
 const root = require('app-root-path').path;
+var webpack = require('webpack');
 module.exports = {
     entry: `${root}/bin/www.ts`,
     target: 'node',
@@ -24,5 +25,8 @@ module.exports = {
             exclude: 'node_modules',
             loader: 'ts-loader'
         }]
-    }
+    },
+    plugins: [
+        new webpack.BannerPlugin('#!/usr/bin/env node', { raw: true })
+    ]
 };
