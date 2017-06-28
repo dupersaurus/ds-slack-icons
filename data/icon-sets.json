@@ -1,5 +1,6 @@
 {
     "sets": [
-        { "name": "pusheen", "list": "pusheen-list.json" }
+        { "name": "pusheen", "list": "pusheen-list.json" },
+        { "name": "bluecat", "list": "bluecat-list.json" }
     ]
 }
