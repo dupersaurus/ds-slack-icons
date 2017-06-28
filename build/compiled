@@ -1,0 +1,319 @@
+(function(e, a) { for(var i in a) e[i] = a[i]; }(exports, /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/**
+	 * Module dependencies.
+	 */
+	var app = __webpack_require__(1);
+	var http = __webpack_require__(11);
+	var debug = __webpack_require__(12);
+	// binding to console
+	var log = debug('modern-express:server');
+	log.log = console.log.bind(console);
+	/**
+	 * Get port from environment and store in Express.
+	 */
+	var PORT = '40629';
+	function getPort(val) {
+	    /**
+	     * Normalize a port into a number, string, or false.
+	     */
+	    var port = parseInt(val, 10);
+	    if (isNaN(port)) {
+	        // named pipe
+	        return val;
+	    }
+	    if (port >= 0) {
+	        // port number
+	        return port;
+	    }
+	    return false;
+	}
+	app.set('port', PORT);
+	/**
+	 * Create HTTP server.
+	 */
+	var server = http.createServer(app);
+	/**
+	 * Listen on provided port, on all network interfaces.
+	 */
+	server.listen(PORT);
+	console.log("Server listen on port " + PORT);
+	server.on('error', function (error) {
+	    /**
+	     * Event listener for HTTP server "error" event.
+	     */
+	    if (error.syscall !== 'listen') {
+	        throw error;
+	    }
+	    var bind = typeof PORT === 'string' ? "Pipe " + PORT : "Port " + PORT;
+	    // handle specific listen errors with friendly messages
+	    switch (error.code) {
+	        case 'EACCES':
+	            console.error(bind + ' requires elevated privileges');
+	            process.exit(1);
+	            break;
+	        case 'EADDRINUSE':
+	            console.error(bind + ' is already in use');
+	            process.exit(1);
+	            break;
+	        default:
+	            throw error;
+	    }
+	});
+	server.on('listening', function () {
+	    /**
+	     * Event listener for HTTP server "listening" event.
+	     */
+	    var addr = server.address();
+	    var bind = (typeof addr === 'string' ? "pipe " + addr : "port " + addr.port);
+	    log("Listening on " + bind);
+	});
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var express = __webpack_require__(2);
+	var logger = __webpack_require__(3);
+	var bodyParser = __webpack_require__(4);
+	var root = __webpack_require__(5);
+	var cookieParser = __webpack_require__(6);
+	var routes = __webpack_require__(7);
+	var app = express();
+	// view engine setup
+	app.set('views', root + "/server/views/");
+	app.set('view engine', 'ejs');
+	app.use(logger('dev'));
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({
+	    extended: false
+	}));
+	app.use(cookieParser());
+	app.use('/', routes);
+	// catch 404 and forward to error handler
+	app.use(function (req, res, next) {
+	    var err = new Error('Not Found');
+	    err.status = 404;
+	    next(err);
+	});
+	// error handlers
+	// development error handler
+	// will print stacktrace
+	if (app.get('env') === 'development') {
+	    app.use(function (err, req, res, next) {
+	        res.status(err.status || 500);
+	        res.render('error', {
+	            message: err.message,
+	            error: err
+	        });
+	    });
+	}
+	app.use(function (err, req, res, next) {
+	    res.status(err.status || 500);
+	    res.render('error', {
+	        message: err.message,
+	        error: {}
+	    });
+	});
+	module.exports = app;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+	module.exports = require("express");
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+	module.exports = require("morgan");
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+	module.exports = require("body-parser");
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+	module.exports = require("app-root-path");
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+	module.exports = require("cookie-parser");
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var express = __webpack_require__(2);
+	var pusheen_1 = __webpack_require__(8);
+	var router = express.Router();
+	/*router.get('/', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+	    res.render('index', {
+	        title: 'Express'
+	    });
+	});*/
+	router.use("/", pusheen_1.default);
+	module.exports = router;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var express_1 = __webpack_require__(2);
+	var data_1 = __webpack_require__(9);
+	var fs = __webpack_require__(10);
+	var PusheenRouter = (function () {
+	    /**
+	     * Initialize the HeroRouter
+	     */
+	    function PusheenRouter() {
+	        this.router = express_1.Router();
+	        this.init();
+	    }
+	    PusheenRouter.prototype.listIcons = function (req, res, next) {
+	        var output = [];
+	        for (var key in PusheenRouter._icons) {
+	            output.push(key);
+	        }
+	        //res.send("All yer items are belong to us");
+	        res.render('list', {
+	            list: output.join("\n")
+	        });
+	    };
+	    /**
+	     * Take each handler, and attach to one of the Express.Router's
+	     * endpoints.
+	     */
+	    PusheenRouter.prototype.init = function () {
+	        // take into account file being updated at runtime
+	        if (PusheenRouter._icons == null) {
+	            PusheenRouter._icons = new Map();
+	            var file = new data_1.DataManager().getSetDefinition("pusheen");
+	            var data = JSON.parse(fs.readFileSync("data/" + file, 'utf8'));
+	            for (var _i = 0, _a = data.icons; _i < _a.length; _i++) {
+	                var icon = _a[_i];
+	                PusheenRouter._icons[icon.name] = icon.url;
+	                console.log("pusheen has icon >> " + icon.name + " at " + icon.url);
+	            }
+	        }
+	        this.router.get('/', this.listIcons);
+	    };
+	    PusheenRouter._icons = null;
+	    return PusheenRouter;
+	}());
+	exports.PusheenRouter = PusheenRouter;
+	var pusheenRoutes = new PusheenRouter();
+	pusheenRoutes.init();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = pusheenRoutes.router;
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var fs = __webpack_require__(10);
+	var DataManager = (function () {
+	    function DataManager() {
+	        if (DataManager._iconSets == null) {
+	            DataManager._iconSets = new Map();
+	            var master = JSON.parse(fs.readFileSync('data/icon-sets.json', 'utf8'));
+	            for (var _i = 0, _a = master.sets; _i < _a.length; _i++) {
+	                var set = _a[_i];
+	                console.log(set);
+	                console.log("Load set " + set.name + " with list " + set.list);
+	                DataManager._iconSets[set.name] = set.list;
+	            }
+	        }
+	    }
+	    DataManager.prototype.getSetDefinition = function (name) {
+	        return DataManager._iconSets[name];
+	    };
+	    DataManager._iconSets = null;
+	    return DataManager;
+	}());
+	exports.DataManager = DataManager;
+	var dataManager = new DataManager();
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = dataManager;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+	module.exports = require("fs");
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+	module.exports = require("http");
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+	module.exports = require("debug");
+
+/***/ })
+/******/ ])));
