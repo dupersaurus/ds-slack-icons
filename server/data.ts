@@ -1,7 +1,7 @@
 import fs = require("fs");
 
 export class DataManager {
-    private static _iconSets: Map<string, any> = null;
+    private static _iconSets: Map<string, string> = null;
     
     constructor() {
         if (DataManager._iconSets == null) {
@@ -20,7 +20,10 @@ export class DataManager {
     getSetDefinition(name: string): {name: string, list: string} {
         return DataManager._iconSets[name];
     }
+
+    getSets(): Map<string, string> {
+        return DataManager._iconSets;
+    }
 }
 
-var dataManager = new DataManager();
-export default dataManager;
+export default DataManager;
