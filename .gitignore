@@ -7,3 +7,4 @@ images/
 ._.*
 npm-debug.log
 data/config.json
+*.log*

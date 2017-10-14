@@ -1,8 +1,9 @@
 import fs = require("fs");
+import {Log} from "./logging";
 
 export class DataManager {
     private static _iconSets: Map<string, string> = null;
-    
+
     constructor() {
         if (DataManager._iconSets == null) {
             DataManager._iconSets = new Map<string, any>();
@@ -10,8 +11,8 @@ export class DataManager {
             var master = JSON.parse(fs.readFileSync('data/icon-sets.json', 'utf8'));
 
             for (var set of master.sets) {
-                console.log(set);
-                console.log(`Load set ${set.name} with list ${set.list}`);
+                Log.trace(set);
+                Log.trace(`Load set ${set.name} with list ${set.list}`);
                 DataManager._iconSets[set.name] = set.list;
             }
         }

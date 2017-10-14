@@ -3,6 +3,8 @@ import {DataManager} from "./data";
 import {ImageServer} from "./image-server"
 import fs = require("fs");
 
+import {Log} from "./logging";
+
 export class CommandRouter {
     private static _imageSets:Object = {};
     private _token: string = null;
@@ -11,7 +13,7 @@ export class CommandRouter {
         var config = JSON.parse(fs.readFileSync(`data/config.json`, 'utf8'));
 
         if (config.apptoken == null || config.apptoken == "") {
-            console.error("App verification token must be set in config file");
+            Log.logger.error("App verification token must be set in config file");
             return;
         }
 

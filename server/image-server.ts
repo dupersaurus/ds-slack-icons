@@ -2,6 +2,8 @@ import {Router, Request, Response, NextFunction} from 'express';
 import fs = require("fs");
 import {DataManager} from "./data";
 
+import {Log} from "./logging";
+
 export class ImageServer {
     private _icons: Object = null;
     
@@ -13,11 +15,12 @@ export class ImageServer {
 
         for (var icon in data.icons) {
             this._icons[icon] = data.icons[icon];
-            console.log(`${_set} has icon >> ${icon} at ${data.icons[icon]}`);
+            Log.logger.trace(`${_set} has icon >> ${icon} at ${data.icons[icon]}`);
         }
     }
 
     public handleRequest(req: Request, res: Response, next: NextFunction) {
+        Log.logger.trace(`ImageServer >> request (${this._set}) >> '${req.body.text}'`);
         if (req.body.text == "") {
             this.sendIconList(req, res);
         } else {
@@ -26,6 +29,7 @@ export class ImageServer {
     }
 
     private sendIconList(req: Request, res: Response) {
+        Log.logger.trace(`ImageServer >> (${this._set}) >> send icon list`);
         var output: string[] = [];
 
         for (var key in this._icons) {
@@ -37,6 +41,7 @@ export class ImageServer {
     }
 
     private sendIcon(req: Request, res: Response) {
+        Log.logger.trace(`ImageServer >> (${this._set}) >> send icon ${req.body.text}`);
         res.contentType("application/json");
 
         var icon = this.getIcon(req.body.text);
