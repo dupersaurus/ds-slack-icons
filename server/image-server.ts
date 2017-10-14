@@ -28,7 +28,11 @@ export class ImageServer {
         if (req.body.text == "") {
             this.sendIconList(req, res);
         } else {
-            this.sendIcon(req, res);
+            if (req.body.text == "selector") {
+                this.sendIconSelector(req, res);
+            } else {
+                this.sendIcon(req, res);
+            }
         }
     }
 
@@ -38,6 +42,27 @@ export class ImageServer {
 
         res.contentType("application/json");
         res.send(`{"text": "All icon names: ${output.join('\\n')}"}`);
+    }
+
+    private sendIconSelector(req: Request, res: Response) {
+        Log.logger.trace(`ImageServer >> (${this._set}) >> send icon list`);
+        var output: string[] = [];
+
+        for (var key of this._iconKeys) {
+            output.push(`{"text": "${key}", "value": "${key}"}`);
+        }
+
+        res.contentType("application/json");
+        res.send(`{
+                    "text": "Select an icon", 
+                    "callback_id": "${this._set}", 
+                    "actions: [{
+                        "name": "image_types",
+                        "text": "Select an image",
+                        "type": "select",
+                        "options": [ ${output.join(',')} ]
+                    }]
+                }`);
     }
 
     private sendIcon(req: Request, res: Response) {
