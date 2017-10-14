@@ -6,6 +6,7 @@ import {Log} from "./logging";
 
 export class ImageServer {
     private _icons: Object = null;
+    private _iconKeys: string[] = [];
     
     constructor(private _set:string) {
         this._icons = new Object();
@@ -15,8 +16,11 @@ export class ImageServer {
 
         for (var icon in data.icons) {
             this._icons[icon] = data.icons[icon];
+            this._iconKeys.push(icon);
             Log.logger.trace(`${_set} has icon >> ${icon} at ${data.icons[icon]}`);
         }
+
+        this._iconKeys.sort();
     }
 
     public handleRequest(req: Request, res: Response, next: NextFunction) {
@@ -30,11 +34,7 @@ export class ImageServer {
 
     private sendIconList(req: Request, res: Response) {
         Log.logger.trace(`ImageServer >> (${this._set}) >> send icon list`);
-        var output: string[] = [];
-
-        for (var key in this._icons) {
-            output.push(key);
-        }
+        var output: string[] = this._iconKeys;
 
         res.contentType("application/json");
         res.send(`{"text": "All icon names: ${output.join('\\n')}"}`);
