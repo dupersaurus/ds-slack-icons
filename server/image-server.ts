@@ -54,13 +54,18 @@ export class ImageServer {
 
         res.contentType("application/json");
         res.send(`{
-                    "text": "Select an icon", 
-                    "callback_id": "${this._set}", 
-                    "actions: [{
-                        "name": "image_types",
-                        "text": "Select an image",
-                        "type": "select",
-                        "options": [ ${output.join(',')} ]
+                    "text": "Choose your sticker",
+                    "response_type": "in_channel",
+                    "attachments": [{
+                        "text": "Select a sticker", 
+                        "attachment_type": "default",
+                        "callback_id": "${this._set}", 
+                        "actions": [{
+                            "name": "image_types",
+                            "text": "Select an image",
+                            "type": "select",
+                            "options": [ ${output.join(',')} ]
+                        }]
                     }]
                 }`);
     }
