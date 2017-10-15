@@ -55,7 +55,7 @@ export class ImageServer {
         res.contentType("application/json");
         res.send(`{
                     "text": "Choose your sticker",
-                    "response_type": "in_channel",
+                    "response_type": "ephemeral",
                     "attachments": [{
                         "text": "Select a sticker", 
                         "attachment_type": "default",
